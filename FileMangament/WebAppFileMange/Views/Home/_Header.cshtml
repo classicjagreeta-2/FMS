@@ -1,0 +1,150 @@
+﻿@model WebAppFileMange.Models.File_Hierarchy
+@{
+    ViewBag.Title = "_Header";
+    Layout = null;
+}
+<div class="page-body">
+ 
+    <div class="col-lg-12">
+        <div id="MyDiv"  class="col-lg-12">
+            <div class="view-info">
+              
+                <div class="col-lg-12">
+
+                    <div class="general-info">
+                        <input type="hidden" id="ddl_0" value="@ViewBag.HLevel" />
+                        <input type="hidden" id="IdFmType" value="@ViewBag.FmType" />
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label class="col-form-label">Floor</label>                                     
+
+                                    @Html.DropDownListFor(x => x.Head.NoUse, new SelectList(ViewBag.DropdownListMasterFileHierarchy, "VALUE", "TEXT"), "SELECT",
+new { @class = "js-example-disabled-results col-sm-12 ddlFileHierarchy FileStorage", @Id = "ddl_1" })
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label class="col-form-label">Rack</label>
+                                    @Html.DropDownListFor(x => x.Head.NoUse, new SelectList(ViewBag.DropdownListMasterNull, "VALUE", "TEXT"), "SELECT",
+new { @class = "js-example-disabled-results col-sm-12 ddlFileHierarchy FileStorage", @Id = "ddl_2" })
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label class="col-form-label">Shelf</label>
+                                    @Html.DropDownListFor(x => x.Head.NoUse, new SelectList(ViewBag.DropdownListMasterNull, "VALUE", "TEXT"), "SELECT",
+new { @class = "js-example-disabled-results col-sm-12 ddlFileHierarchy FileStorage", @Id = "ddl_3" })
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <label class="col-form-label">Arch</label>
+                                    @Html.DropDownListFor(x => x.Head.NoUse, new SelectList(ViewBag.DropdownListMasterNull, "VALUE", "TEXT"), "SELECT",
+new { @class = "js-example-disabled-results col-sm-12 ddlFileHierarchy FileStorage", @Id = "ddl_4" })
+                                </div>
+                            </div>
+                            <div class="col-md-1">
+                                <div class="form-group">
+                                    <label class="col-form-label col-md-12"> </label>
+                                    <button class="btn btn-warning btn-outline-warning btn-sm" id="btnresethierchy0" type="button"><i class="icofont icofont-warning-alt"></i>RESET</button>
+                                </div>
+                            </div>
+
+                            <!-- end of table col-lg-6 -->
+                            <!-- end of table col-lg-6 -->
+                        </div>
+                        <!-- end of row -->
+                    </div>
+                    <!-- end of general info -->
+                </div>
+
+                <div class="col-lg-12">
+                    <div class="general-info">
+                        <input type="hidden" id="ddl2_0" value="@ViewBag.HLevel2" />
+                        <div class="row">
+
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label class="col-form-label">Company</label>
+
+                                    @Html.DropDownListFor(x => x.Head.NoUse, new SelectList(ViewBag.DropdownListMasterFileHierarchy0, "VALUE", "TEXT"), "SELECT",
+new { @class = "js-example-disabled-results col-sm-12 ddlFileHierarchy2 FileNameLocation", @Id = "ddl2_1"  })
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label class="col-form-label">Unit</label>
+                                    @Html.DropDownListFor(x => x.Head.NoUse, new SelectList(ViewBag.DropdownListMasterNull, "VALUE", "TEXT"), "SELECT",
+new { @class = "js-example-disabled-results col-sm-12 ddlFileHierarchy2 FileNameLocation", @Id = "ddl2_2"  })
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label class="col-form-label">Department</label>
+                                    @Html.DropDownListFor(x => x.Head.NoUse, new SelectList(ViewBag.DropdownListMasterNull, "VALUE", "TEXT"), "SELECT",
+new { @class = "js-example-disabled-results col-sm-12 ddlFileHierarchy2 FileNameLocation", @Id = "ddl2_3"  })
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label class="col-form-label">Type</label>
+                                    @Html.DropDownListFor(x => x.Head.NoUse, new SelectList(ViewBag.DropdownListMasterNull, "VALUE", "TEXT"), "SELECT",
+new { @class = "js-example-disabled-results col-sm-12 FileNameLocation", @Id = "ddl2_4"  })
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label class="col-form-label">Year</label>
+                                    @Html.DropDownListFor(x => x.Head.Yyear, new SelectList(ViewBag.DropdownListMasterYear, "VALUE", "TEXT"), "SELECT",
+new { @class = "js-example-disabled-results col-sm-12 FileNameLocation", @Id = "ddlYear" })
+                                </div>
+                            </div>
+
+                            <div class="col-md-8">
+                                <div class="form-group">
+                                    <label class="col-form-label">
+                                        Voucher Id
+                                    </label>
+                                    @Html.TextBoxFor(x => x.Head.VoucherId, new { @class = "form-control FileNameLocation4TextBox", @Id = "txtVoucherId" })
+                                </div>
+                            </div>
+                            <div class="col-md-1">
+                                <div class="form-group">
+                                    <label class="col-form-label col-md-12"> </label>
+                                    <button class="btn btn-warning btn-outline-warning btn-sm" id="btnresethierchy1" type="button"><i class="icofont icofont-warning-alt"></i>RESET</button>
+
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label class="col-form-label">
+                                        Remarks
+                                    </label>
+                                    @Html.TextBoxFor(x => x.Head.Remarks, new { @class = "form-control FileNameLocation4TextBox", @Id = "txtRemarks" })
+                                </div>
+                            </div>
+
+
+                            <!-- end of table col-lg-6 -->
+                            <!-- end of table col-lg-6 -->
+
+                        </div>
+
+
+                        <!-- end of row -->
+                    </div>
+                    <!-- end of general info -->
+                </div>
+                <!-- end of col-lg-12 -->
+
+                <button class="btn btn-sm btn-danger pull-right" id="btnresethierchyAll" type="button">RESET ALL</button>
+
+                <!-- end of row -->
+            </div>
+            <!-- end of view-info -->
+            <!-- end of edit-info -->
+        </div>
+    </div>
+</div>
+ 

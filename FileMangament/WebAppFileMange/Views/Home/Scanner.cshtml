@@ -1,0 +1,526 @@
+﻿@model WebAppFileMange.Models.File_Hierarchy
+
+@{
+    ViewBag.Title = "UPLOAD / DOWNLOAD FILES";
+}
+<style>
+    .input-group a {
+        padding-top: 12px;
+        padding-bottom: 12px;
+        /* font-size: 12px; */
+    }
+
+    .file-drop-zone {
+        min-height: 100px;
+    }
+
+    @@media (min-width:1200px) {
+        .container {
+            max-width: 100%;
+        }
+    }
+
+    .hide1 {
+        display: none;
+    }
+</style>
+<link href="~/libraries/assets/css/font-awesome.min.css" rel="stylesheet" />
+<!-- Select 2 css -->
+<link rel="stylesheet" href="~/libraries/bower_components/select2/css/select2.min.css">
+<!-- Multi Select css -->
+<link rel="stylesheet" type="text/css" href="~/libraries/bower_components/bootstrap-multiselect/css/bootstrap-multiselect.css">
+<link rel="stylesheet" type="text/css" href="~/libraries/bower_components/multiselect/css/multi-select.css">
+<link href="~/libraries/assets/css/ag-style.css" rel="stylesheet" />
+<link href="~/libraries/assets/css/accodin.css" rel="stylesheet" />
+<link href="~/libraries/assets/css/ag-style.css" rel="stylesheet" />
+<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+
+<link href="~/libraries/msg/jquery-confirm.min.css" rel="stylesheet" />
+<link href="~/libraries/smoke-v3.1.1/css/smoke.css" rel="stylesheet" />
+<link href="~/libraries/assets/css/CheckBoxStyle.css" rel="stylesheet" />
+<script type="text/javascript" src="~/libraries/bower_components/switchery/js/switchery.min.js"></script>
+<div class="page-body">
+    @using (Ajax.BeginForm("", "", new AjaxOptions { }, new { Id = "myForm" }))
+    {
+        <h5 class="card-header-text">Storage Details</h5>
+
+        <div class="card">
+
+
+            @Html.HiddenFor(x => x.Head.Hierarchy, new { @class = "form-control", @Id = "HId_Hierarchy" })
+            @Html.HiddenFor(x => x.Head.Hierarchy2, new { @class = "form-control", @Id = "HId_Hierarchy2" })
+
+
+
+            @Html.Partial("_Header", Model)
+
+
+            <div class="col-lg-12">
+
+
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label class="col-form-label">
+                            Physical Storage
+                        </label>
+                        @Html.TextBoxFor(x => x.Head.NoUse, new { @class = "form-control", @Id = "IdPhysicalStorage", @Readonly = true })
+
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label class="col-form-label">
+                            File Name
+                        </label>
+
+                        @Html.TextBoxFor(x => x.Head.FileName, new { @class = "form-control", @Id = "IdfileName", @Readonly = true })
+
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label class="col-form-label">
+                            File Location
+                        </label>
+                        @Html.TextBoxFor(x => x.Head.FilePath, new { @class = "form-control", @Id = "IdFileLocation", @Readonly = true })
+
+                    </div>
+                </div>
+
+
+                <!-- end of general info -->
+            </div>
+
+
+
+        </div>
+        @Html.HiddenFor(x => x.Head.UploadSessionId, new { Value = ViewBag.FromSession, id = "Idsession" })
+    }
+
+
+
+
+    <div class="card">
+        <div class="card-block">
+            <div class="view-info">
+
+                <div class="col-lg-12">
+                    @*  *@
+
+                    <div class="general-info">
+
+                        <div class="row">
+                            <div class="col-md-3">
+                                <a href="@Url.Action("ScannerOFF","Home")" class="btn btn-danger btn-outline-danger btn-icon">OFF</a>
+                                <a href="@Url.Action("ScannerON","Home")" class="btn btn-info btn-outline-info btn-icon">ON</a>
+                            </div>
+                           
+                            <div class="col-md-2">
+                                <label class="col-form-label"></label>
+                                <button type="button" onclick="scanImage();" class="btn btn-primary">LOAD SCANNER</button>
+                            </div>
+                            <div class="col-md-2">
+                                <label class="col-form-label"></label>
+                                <button type="submit" id="btnUplaod" class="btn btn-info"><i class="icofont icofont-warning-alt"></i>UPLOAD FILES</button>
+                            </div>
+                            <div class="col-md-2">
+                                <label class="col-form-label">Total File To Upload</label>
+                                <input type="text" class="form-control" id="txtUploadedfilecount" disabled />
+                            </div>
+                            <div class="col-md-2">
+                                <label class="col-form-label"></label>
+                                <button type="submit" id="btnSubmit" class="btn btn-primary"><i class="icofont icofont-warning-alt"></i>TRANFER TO SERVER</button>
+                            </div>
+
+                             
+
+
+
+
+                        </div>
+
+                        </div>
+                    <!-- end of row -->
+                </div>
+                <!-- end of general info -->
+            </div>
+            <div id="selectedFiles" class="row" style="padding: 3px"></div>
+            <div class="modal fade mm" role="dialog">
+                <div class="modal-dialog modal-lg" role="document">
+                    <div class="modal-content">
+                        <div style="max-height:1200px;overflow:scroll;">
+                            <canvas id="myCanvas"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+
+
+
+    <div class="modal fade" id="IdModal" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Message</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                </div>
+                <div class="container"></div>
+                <div class="modal-body">
+
+
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label class="col-form-label">
+                                Physical Storage  : <label id="Show_IdPhysicalStorage"></label>
+                            </label>
+
+                            <hr style="margin: -3px 0px 1px 1px;">
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label class="col-form-label">
+                                File Location : <label id="Show_IdFileLocation"></label>
+                            </label>
+
+                            <hr style="margin: -3px 0px 1px 1px;">
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label class="col-form-label">
+                                File Names :
+                            </label>
+                            <ul id="IdFileNames"></ul>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <a href="#" data-dismiss="modal" class="btn btn-danger" id="btnRestFiles">Close</a>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+    @section scripts{
+
+        <script src="~/libraries/assets/js/select2.js"></script>
+        <script type="text/javascript" src="~/libraries/assets/pages/advance-elements/select2-custom.js"></script>
+
+        <link href="~/libraries/msg/jquery-confirm.min.css" rel="stylesheet" />
+        <link href="~/libraries/fileupload/css/fileinput.css" media="all" rel="stylesheet" type="text/css" />
+        @*<link href="~/libraries/fileupload/css/Filefontawesome.css" rel="stylesheet" />*@<link href="~/libraries/fileupload/css/Filefontawesome.css" rel="stylesheet" />
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css" crossorigin="anonymous">
+        <link href="~/libraries/fileupload/themes/explorer-fa5/theme.css" media="all" rel="stylesheet" type="text/css" />
+
+        <script src="~/libraries/fileupload/js/plugins/buffer.min.js" type="text/javascript"></script>
+        <script src="~/libraries/fileupload/js/plugins/filetype.min.js" type="text/javascript"></script>
+        <script src="~/libraries/fileupload/js/plugins/piexif.js" type="text/javascript"></script>
+        <script src="~/libraries/fileupload/js/plugins/sortable.js" type="text/javascript"></script>
+
+        <script src="~/libraries/fileupload/js/fileinput.js" type="text/javascript"></script>
+        <script src="~/libraries/fileupload/js/locales/fr.js" type="text/javascript"></script>
+        <script src="~/libraries/fileupload/js/locales/es.js" type="text/javascript"></script>
+        <script src="~/libraries/fileupload/themes/fa5/theme.js" type="text/javascript"></script>
+        <script src="~/libraries/fileupload/themes/explorer-fa5/theme.js" type="text/javascript"></script>
+
+
+
+        <script src="~/JsProject/commanJs.js"></script>
+        <script src="~/libraries/js/loader/jquery.blockUI.js"></script>
+        <script src="~/libraries/msg/jquery-confirm.min.js"></script>
+
+        <script src="~/Scripts/notify.min.js"></script>
+        <script src="~/libraries/smoke-v3.1.1/js/smoke.js"></script>
+
+        <script src="~/JsProject/FMS_Home.js"></script>
+        <script src="~/JsProject/ScanFileUpload.js"></script>
+        <script src="~/Scripts/notify.min.js"></script>
+        <script type="text/javascript">
+            var selDiv = "";
+            var storedFiles = [];
+
+            $(document).ready(function () {
+                selDiv = $("#selectedFiles");
+                $("body").on("click", ".selFile", editFiles);
+            });
+
+            var start = function () {
+                var i = 0;
+
+                var wsImpl = window.WebSocket || window.MozWebSocket;
+
+                window.ws = new wsImpl('ws://localhost:8181/');
+                debugger;
+                ws.onmessage = function (e) {
+                    debugger;
+                    if (typeof e.data === "string") {
+                        //IF Received Data is String
+                    }
+                    else if (e.data instanceof ArrayBuffer) {
+                        //IF Received Data is ArrayBuffer
+                    }
+                    else if (e.data instanceof Blob) {
+
+                        i++;
+
+                        var f = e.data;
+
+                        f.name = "File" + i;
+
+                        storedFiles.push(f);
+
+                        var reader = new FileReader();
+
+                        reader.onload = function (e) {
+
+                            var html = "<div class=\"col-sm-2 text-center\" style=\"border: 1px solid black; margin-left: 2px;\"><img height=\"130px\" width=\"150px\" src=\"" + e.target.result + "\" data-file='" + f.name + "' class='selFile' title='Click to remove'><br/>" + i + "</div>";
+                            selDiv.append(html);
+                            BtUplaodProperty();
+
+                            //var bytes = new Uint8Array(e.data);
+                            //var blob = new Blob([bytes], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
+                            //var link = document.createElement('a');
+                            //link.href = window.URL.createObjectURL(blob);
+                            //link.download = "PurchaseRegister.xlsx";
+                            //link.click();
+                        }
+                        reader.readAsDataURL(f);
+
+
+                    }
+                };
+                ws.onopen = function () {
+                    //Do whatever u want when connected succesfully
+                };
+                ws.onclose = function () {
+                    //Do whatever u want when Connection dismissed
+                };
+            }
+            window.onload = start;
+
+            function scanImage() {
+                ws.send("1100");
+            };
+
+            function editFiles(e) {
+                var file = $(this).data("file");
+                for (var i = 0; i < storedFiles.length; i++) {
+                    if (storedFiles[i].name === file) {
+                        $('.mm').modal('show');
+                        var c = document.getElementById("myCanvas");
+                        var ctx = c.getContext("2d");
+                        var img = new Image();
+                        img.src = window.URL.createObjectURL(storedFiles[i]);
+                        img.onload = function () {
+                            c.width = img.width;
+                            c.height = img.height;
+                            ctx.drawImage(img, 0, 0, img.width, img.height);
+                        }
+                        break;
+
+                    }
+                }
+            };
+        </script>
+        <script>
+
+
+            $("#tab1").click(function () {
+
+                $("#T1").addClass("active")
+                $("#T2").removeClass("active")
+
+            });
+            $("#tab2").click(function () {
+                blockUIStart();
+                $("#T1").removeClass("active")
+                $("#T2").addClass("active")
+                var Data = {
+                    Autoid: $("#Hd_Id").val().trim()
+                }
+                debugger;
+                var Rtn = httpPOST("/Home/GetFiles", Data, true)
+                debugger;
+                $("#IdDataList").empty().append(Rtn.data);
+                $.unblockUI();
+
+            });
+
+            $(document).ready(function () {
+
+
+
+                BtUplaodProperty();
+                BtnSubmitProperty();
+                document.querySelectorAll('.FileNameLocation').forEach(elem => {
+                    elem.required = true;
+                });
+                debugger;
+
+
+                ddlYearCheck(Number($("#IdFmType").val()));
+
+
+
+            });
+            function BtnSubmitProperty() {
+                if (Number($("#txtUploadedfilecount").val()) <= 0) {
+                    $('#btnSubmit').prop('disabled', true);
+                } else {
+                    $('#btnSubmit').prop('disabled', false);
+                }
+            }
+            function BtUplaodProperty() {
+                debugger;
+                var img = [];
+                $("#selectedFiles img").each(function () {
+                    img.push($(this).attr('src'))
+                })
+
+                if (img.length > 0) {
+                    $('#btnUplaod').prop('disabled', false);
+                } else {
+                    $('#btnUplaod').prop('disabled', true);
+                }
+            }
+            $("#btnRestFiles").click(function () {
+                debugger;
+                $("#file-Uploder").fileinput('clear');
+                var Id = Number($("#Idsession").val()) + 12345;
+                $("#Idsession").val(Id);
+                $("#txtVoucherId").val("");
+                $("#txtUploadedfilecount").val("");
+
+                if (Number($("#txtUploadedfilecount").val()) <= 0) {
+                    $('#btnSubmit').prop('disabled', true);
+                } else {
+                    $('#btnSubmit').prop('disabled', false);
+                }
+
+                //$("#file-Uploder").on('fileclear', function (event) {
+                //    var Id = Number($("#Idsession").val()) + 12345;
+                //    $("#Idsession").val(Id);
+                //});
+            })
+            function delRow(Id) {
+                $("#T1").removeClass("active")
+                $("#T2").addClass("active")
+
+                $.confirm({
+                    title: "Confirmation required",
+                    content: "Are you sure you want to delete?",
+                    buttons: {
+
+                        NO: function () {
+
+                        },
+                        YES: function () {
+
+                            var Data = {
+                                Autoid: Id
+                            }
+                            debugger;
+                            var Rtn = httpPOST("/Common/DeleteFiles", Data, true)
+                            debugger;
+                            if (Number(Rtn.data.StatsCode) <= 0) {
+                                msgError("Failed to delete" + Rtn.data.Message);
+                            } else {
+                                $.notify("File Delete Sucessfully", {
+                                    globalPosition: "right center",
+                                    className: "success"
+                                })
+
+                            }
+                            $("#tab2").click();
+                        },
+
+                    }
+                });
+
+                // $("#IdDataList").empty().append(Rtn.data);
+            }
+
+
+
+            $('#btnSubmit').click(function (e) {
+                e.preventDefault();
+                var IstoVlidate = 'form';
+                if ($(IstoVlidate).smkValidate()) {
+
+                    var dataString = new FormData($("#myForm").get(0));
+                    blockUIStart();
+
+                    $.ajax({
+                        url: "/Home/SaveForm",
+                        data: dataString,
+                        contentType: false,
+                        processData: false,
+                        cache: false,
+                        type: "POST",
+                        dataType: "json",
+                        success: function (data) {
+                            OnSuccess(data);
+                        },
+                        error: function (xhr, ajaxOptions, thrownError) {
+                            OnFailure(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+                        }
+                    });
+
+
+                }
+            });
+
+            function OnSuccess(result) {
+                
+                $.unblockUI();
+                if (Number(result.rReturn.StatusCode) <= 0) {
+
+                    msgError(result.rReturn.details);
+                    //$.notify(result.message, {
+                    //    globalPosition: "top center",
+                    //    className: "Errror"
+                    //})
+
+                } else {
+                    storedFiles = [];
+                    $("#selectedFiles").empty();
+                    var Id = Number($("#Idsession").val()) + 12345;
+                    $("#Idsession").val(Id);
+                    $("#txtUploadedfilecount").val(0);
+                    BtUplaodProperty();
+                    BtnSubmitProperty();
+
+
+                    $("#Show_IdFileLocation").html($("#IdFileLocation").val())
+                    $("#Show_IdPhysicalStorage").html($("#IdPhysicalStorage").val())
+                    var list = "";
+
+                    for (i = 0; i < result.Lst.length; i++) {
+                        list += "<li>" + result.Lst[i].FileName + "</li>";
+
+                    }
+                    $("#IdFileNames").empty().append(list);
+                    $('#IdModal').modal('show');
+
+                }
+
+            }
+
+            function OnFailure(result) {
+                $.unblockUI();
+                msgError(result);
+            }
+        </script>
+
+    }

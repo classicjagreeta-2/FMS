@@ -1,0 +1,50 @@
+﻿@{
+    Layout = null;
+}
+@model WebAppFileMange.Models.FMS_Model_HierarchyMaster
+
+<div class="dataTables_scroll">
+    <div class="table-responsive text-nowrap" id="DivTble">
+        <div style="overflow:auto">
+            <table id="tblChild" class="table table-striped table-bordered nowrap dataTable no-footer" style="width: 100%;" role="grid" aria-describedby="ajax-table_info">
+                <thead class="classHaeder">
+                    <tr>
+                        <th width="5%"> </th>
+                        <th width="0%" style="display:none"> </th>
+                        <th width="20%"><label class="col-form-label">  Code </label> </th>
+                        <th><label class="col-form-label"> Hierarchy Name </label> </th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    @foreach (var item in Model.HierarchyChlid)
+                    {
+                        <tr>
+                            <td class="details-control" style="height: 20px;">
+
+                                <button type="button" data-toggle="modal" data-target="#IdModal"
+                                        class="AddAmount btn btn-success btn-xs text-center loading" title="Edit/Update"
+                                        onclick=PopupForm(@item.PARENTID,@item.AUTOID)>
+                                    <i class='icofont icofont-pencil-alt-4 icofont-0.5x'></i>
+                                </button>
+                               
+                            </td>
+                            <td style="display:none">@item.AUTOID </td>
+                            <td>@item.PK_CODE</td>
+                            <td>@item.HIERARCHY_NAME</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<link href="~/libraries/smoke-v3.1.1/css/smoke.css" rel="stylesheet" />
+
+<script type="text/javascript" src="~/libraries/bower_components/select2/js/select2.full.min.js"></script>
+<!-- Multiselect js -->
+<!-- Custom js -->
+<script type="text/javascript" src="~/libraries/assets/pages/advance-elements/select2-custom.js"></script>
+<script src="~/libraries/msg/jquery-confirm.min.js"></script>
+<script src="~/JsProject/TD_EntryProduct.js"></script>

@@ -1,0 +1,49 @@
+﻿@model WebAppFileMange.Models.Model_Report
+
+
+@{
+    Layout = null;
+}
+
+<link href="~/libraries/assets/css/CheckBoxStyle.css" rel="stylesheet" />
+<div class="j-unit" style="margin-bottom:27px">
+    <div class="checkbox-zoom zoom-primary" id="alloptions">
+      
+        @foreach (var item in Model.LstReport)
+        {
+
+            <div class="col-md-12">
+                <div class="form-group">
+
+                    <input type="checkbox" class="ReportCheck" value="@item.Email" />
+                    <span> @item.Email</span>
+                </div>
+            </div>
+
+        }
+        <div class="col-md-12" style="display:none">
+
+            <div class="form-group">
+                <label class="col-form-label">
+                    EMAIL TO:
+                </label>
+                <textarea id="txtemailId" style="width: 100%;" pattern="[^\s]+">@ViewBag.Email</textarea>
+                Comma Delimited Multi-Email
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    var checkboxes = $("#alloptions input[type='checkbox']");
+    $(".ReportCheck").click(function () {
+        debugger;
+
+        $('#txtemailId').val(
+                checkboxes.filter(':checked').map(function (item) {
+                    return this.value;
+                }).get().join(', ')
+             );
+
+    })
+</script>

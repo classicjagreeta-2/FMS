@@ -1,0 +1,9 @@
+﻿
+@{
+    ViewBag.Title = "ScannerDocument";
+}
+
+<h2>ScannerDocument</h2>
+
+ @Html.DropDownList("ddl", new SelectList(ViewBag.DropdownListScanner),
+                                  "SELECT..", new { @class = "js-example-responsive col-sm-12" })

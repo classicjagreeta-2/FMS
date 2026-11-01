@@ -1,0 +1,242 @@
+﻿@model WebAppFileMange.Models.FMS_Model_HierarchyMaster
+@{
+
+    ViewBag.Title = "Hierarchy Master";
+}
+
+<!-- Select 2 css -->
+<link rel="stylesheet" href="~/libraries/bower_components/select2/css/select2.min.css">
+<link href="~/libraries/smoke-v3.1.1/css/smoke.css" rel="stylesheet" />
+<link href="~/libraries/msg/jquery-confirm.min.css" rel="stylesheet" />
+<link rel="stylesheet" type="text/css" href="~/libraries/bower_components/datatables.net-bs4/css/dataTables.bootstrap4.min.css">
+<link rel="stylesheet" type="text/css" href="~/libraries/assets/pages/data-table/css/buttons.dataTables.min.css">
+<link href="~/libraries/msg/jquery-confirm.min.css" rel="stylesheet" />
+<link href="~/libraries/TableRowDesign.css" rel="stylesheet" />
+
+<link rel="stylesheet" href="~/libraries/bootstrapTale/src/extensions/fixed-columns/bootstrap-table-fixed-columns.css">
+<script src="~/libraries/bootstrapTale/src/extensions/fixed-columns/bootstrap-table-fixed-columns.js"></script>
+
+<style>
+    .modal-backdrop {
+        opacity: 0.5 !important;
+    }
+
+    .dataTables_length {
+        margin: 0px 0px -45px 6px;
+    }
+
+    div.dt-buttons {
+        margin: 0px 0px 0px 188px;
+    }
+
+
+    .select2-container .select2-selection--single {
+        height: 34px;
+    }
+</style>
+<div class="modal fade" id="IdModal" role="dialog" data-backdrop="static" data-keyboard="false">
+
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          
+            <div class="container"></div>
+            <div class="modal-body">
+
+               
+                <div id="IdDivDeatils"> </div>
+            </div>
+            
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="myModal2">
+
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header" Style="padding: 2px;background-color: #ff00008a;color: white;">
+                <h4 class="modal-title">Alert Message</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            </div>
+            <div class="container"></div>
+            <div class="modal-body">
+
+                <div id="IdDivMsg" style="font-size:22px;color:red;"> </div>
+                <br />
+                <div id="IdDivDeatils" style="color: #cfcfcf;"> </div>
+            </div>
+            <div class="modal-footer">
+                <a data-dismiss="modal" class="btn btn-danger">Close</a>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+ 
+
+<div class="card">
+    <div class="card-header pull-left">
+        <button id="IdaddNewRecordNew" type="button" class="btn btn-sm btn-info" data-toggle="modal" data-target="#IdModal">
+            <i class="fa fa-plus-circle fa-lg" aria-hidden="true"></i>  Add New
+        </button>
+        <a href=@Url.Action("CommonDashBoard","CommonDashBoard") class="btn btn-sm btn-info">
+            <i class="fa fa-times-circle fa-lg" aria-hidden="true"></i>Close
+        </a>
+        <div class="text-center" style="margin-top: -29px;"><h4>Hierachy Master</h4></div>
+    </div>
+    <div class="card-block">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="col-lg-5">
+                    <div class="form-group">
+                        <label for="exampleInputName1">Parent Hierarchy*</label>
+                        @Html.DropDownListFor(x => x.HierarchyHead.AUTOID, new SelectList(ViewBag.DropdownListMasterHierarchy, "AUTOID", "HIERARCHY_NAME"),
+                            "SELECT..", new { @class = "js-example-responsive", @id = "ddlParent", @required = "required" })
+                    </div>
+
+                </div>
+                <input type="hidden" id="IdHiddenProject" value="@ViewBag.ParentId" />
+                <div class="col-lg-12">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div id="ddChild">
+                                @Html.Partial("_HierarchyChild", Model)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- end of row -->
+            <!-- end of general info -->
+        </div>
+    </div>
+
+
+    <!-- end of col-lg-12 -->
+    @*<button class="btn btn-sm btn-danger pull-right" id="btnresethierchyAll" type="button">RESET ALL</button>*@
+
+    <!-- end of row -->
+</div>
+
+
+@section scripts{
+
+
+    <script src="~/libraries/bower_components/datatables.net/js/jquery.dataTables.min.js"></script>
+    <script src="~/libraries/bower_components/datatables.net-buttons/js/dataTables.buttons.min.js"></script>
+    <script src="~/libraries/assets/pages/data-table/extensions/buttons/js/jszip.min.js"></script>
+    <script src="~/libraries/assets/pages/data-table/extensions/buttons/js/vfs_fonts.js"></script>
+    <script src="~/libraries/assets/pages/data-table/extensions/buttons/js/buttons.colVis.min.js"></script>
+    <script src="~/libraries/bower_components/datatables.net-buttons/js/buttons.html5.min.js"></script>
+    <script src="~/libraries/bower_components/datatables.net-bs4/js/dataTables.bootstrap4.min.js"></script>
+
+
+    <script type="text/javascript" src="~/libraries/assets/js/modalEffects.js"></script>
+    <script type="text/javascript" src="~/libraries/assets/js/classie.js"></script>
+    <script src="~/libraries/js/jquery.unobtrusive-ajax.min.js"></script>
+    @*<script src="~/libraries/assets/pages/data-table/js/data-table-custom.js"></script>*@
+    @*<script src="~/libraries/assets/pages/data-table/extensions/responsive/js/responsive-custom.js"></script>*@
+
+
+
+    @*<script src="~/libraries/js/jquery-1.10.2.min.js"></script>*@
+
+    <script src="~/libraries/assets/js/select2.js"></script>
+    <script type="text/javascript" src="~/libraries/assets/pages/advance-elements/select2-custom.js"></script>
+
+
+
+    <script src="~/Scripts/notify.min.js"></script>
+    <script src="~/libraries/msg/jquery-confirm.min.js"></script>
+    <script src="~/JsProject/commanJs.js"></script>
+    @*<script src="~/Scripts/notify.min.js"></script>*@
+
+    <script>
+        $(document).ready(function () {
+            debugger;
+            datatable();
+        })
+        $("#IdaddNewRecordNew").click(function () {
+            debugger;
+
+            var mparentID = $("#ddlParent").val();
+            var data = { ParentId: mparentID, Id: 0 };
+            $.ajax({
+                type: "GET",
+                url: "/FMS_HierarchyMaster/HierarchyAddEditModel",
+                async: false,
+                data: data,
+                success: function (data) {
+
+                    debugger;
+                    $("#IdDivDeatils").empty().append(data);
+
+
+                },
+                error: function (errorjqXHR, exception) {
+                    debugger;
+                    $("#divMsg").empty();
+                    //$.notify(data.message, {
+                    //    globalPosition: "top center",
+                    //    className: "Errror"
+                    //})
+                }
+            });
+        })
+        function PopupForm(pId, cId) {
+            debugger;
+            var data = { ParentId: pId, Id: cId };
+
+            $.ajax({
+                type: "GET",
+                url: "/FMS_HierarchyMaster/HierarchyAddEditModel",
+                async: false,
+                data: data,
+                success: function (data) {
+                    $("#IdDivDeatils").empty().append(data);
+                },
+                error: function (errorjqXHR, exception) {
+                    debugger;
+                    $('.btnClose').click();
+                    //$.notify("Error In Edit", {
+                    //    globalPosition: "top center",
+                    //    className: "Errror"
+                    //})
+                }
+
+            });
+        }
+        $("#ddlParent").change(function () {
+
+
+            var mparent = $("#ddlParent").val();
+            var JsParmaterdata = {
+                ID: mparent,
+            }
+            debugger;
+            var JsData = httpPOST("/FMS_HierarchyMaster/HierarchyMaster1", JsParmaterdata, true);
+            debugger;
+            $("#ddChild").empty().html(JsData.data);
+            //dataTable
+            datatable();
+            //alert(mparent)
+        })
+        function datatable() {
+            $("#tblChild").DataTable({
+                scrollY: '310px',
+                scrollX: true,
+                //  order: [], //Initial no order.
+
+
+                //columnDefs: [
+                //    { width: '200px' }
+                //],
+                lengthMenu: [
+                    [10, 25, 50, 100, 500, -1],
+                    ['10', '25', '50', '100', '500', 'Show all']
+                ],
+            });
+
+        }
+    </script>
+}

@@ -1,0 +1,604 @@
+﻿@model WebAppFileMange.Models.File_Hierarchy
+
+@{
+    ViewBag.Title = "UPLOAD / DOWNLOAD FILES";
+}
+<style>
+    .input-group a {
+        padding-top: 12px;
+        padding-bottom: 12px;
+        /* font-size: 12px; */
+    }
+
+    .file-drop-zone {
+        min-height: 100px;
+    }
+
+    @@media (min-width:1200px) {
+        .container {
+            max-width: 100%;
+        }
+    }
+
+    .hide1 {
+        display: none;
+    }
+</style>
+<link href="~/libraries/assets/css/font-awesome.min.css" rel="stylesheet" />
+<!-- Select 2 css -->
+<link rel="stylesheet" href="~/libraries/bower_components/select2/css/select2.min.css">
+<!-- Multi Select css -->
+<link rel="stylesheet" type="text/css" href="~/libraries/bower_components/bootstrap-multiselect/css/bootstrap-multiselect.css">
+<link rel="stylesheet" type="text/css" href="~/libraries/bower_components/multiselect/css/multi-select.css">
+<link href="~/libraries/assets/css/ag-style.css" rel="stylesheet" />
+<link href="~/libraries/assets/css/accodin.css" rel="stylesheet" />
+<link href="~/libraries/assets/css/ag-style.css" rel="stylesheet" />
+<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+
+<link href="~/libraries/msg/jquery-confirm.min.css" rel="stylesheet" />
+<link href="~/libraries/smoke-v3.1.1/css/smoke.css" rel="stylesheet" />
+<link href="~/libraries/assets/css/CheckBoxStyle.css" rel="stylesheet" />
+<script type="text/javascript" src="~/libraries/bower_components/switchery/js/switchery.min.js"></script>
+<div class="page-body">
+    @using (Ajax.BeginForm("", "", new AjaxOptions { }, new { Id = "myForm" }))
+    {
+        <h5 class="card-header-text">Storage Details</h5>
+
+        <div class="card">
+
+
+            @Html.HiddenFor(x => x.Head.Hierarchy, new { @class = "form-control", @Id = "HId_Hierarchy" })
+            @Html.HiddenFor(x => x.Head.Hierarchy2, new { @class = "form-control", @Id = "HId_Hierarchy2" })
+
+
+
+            @Html.Partial("_Header", Model)
+
+
+            <div class="col-lg-12">
+
+
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label class="col-form-label">
+                            Physical Storage
+                        </label>
+                        @Html.TextBoxFor(x => x.Head.NoUse, new { @class = "form-control", @Id = "IdPhysicalStorage", @Readonly = true })
+
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label class="col-form-label">
+                            File Name
+                        </label>
+
+                        @Html.TextBoxFor(x => x.Head.FileName, new { @class = "form-control", @Id = "IdfileName", @Readonly = true })
+
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label class="col-form-label">
+                            File Location
+                        </label>
+                        @Html.TextBoxFor(x => x.Head.FilePath, new { @class = "form-control", @Id = "IdFileLocation", @Readonly = true })
+
+                    </div>
+                </div>
+
+
+                <!-- end of general info -->
+            </div>
+
+
+
+        </div>
+        @Html.HiddenFor(x => x.Head.UploadSessionId, new { Value = ViewBag.FromSession, id = "Idsession" })
+    }
+
+    <div class="row">
+        <div class="col-sm-12">
+
+            <div class="card">
+
+                <div class="card-block tab-icon">
+                    <!-- Row start -->
+                    <div class="row">
+
+
+                        <div class="col-lg-12 col-xl-12">
+                            <!-- <h6 class="sub-title">Tab With Icon</h6> -->
+                            <!-- Nav tabs -->
+                            <ul class="nav nav-tabs md-tabs " role="tablist">
+                                <li class="nav-item">
+                                    <a class="nav-link active" id="tab1" data-toggle="tab" href="#T1" role="tab"><i class="icofont icofont-upload"></i>Upload New Files</a>
+                                    <div class="slide"></div>
+                                </li>
+                                @*<li class="nav-item">
+                                        <a class="nav-link" id="tab2" data-toggle="tab" href="#T2" role="tab"><i class="icofont icofont-download "></i>Download Or View Files </a>
+                                        <div class="slide"></div>
+                                    </li>*@
+
+                            </ul>
+                            <!-- Tab panes -->
+                            <div class="tab-content card-block">
+                                <div class="tab-pane active" id="T1" role="tabpanel">
+
+                                    <div class="card-block">
+                                        <div class="file-loading">
+                                            <input id="file-Uploder" type="file" multiple>
+                                        </div>
+                                    </div>
+
+
+
+                                    @*<button type="reset" class="btn btn-outline-secondary">Reset</button>*@
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <div class="general-info">
+
+                                            <div class="row pull-left">
+                                                <div class="col-md-3 d-none">
+                                                    <div class="form-group">
+                                                        <label class="col-form-label">
+                                                            File Session Id
+                                                        </label>
+
+
+                                                        <input type="text" class="form-control" value="@ViewBag.FromSession" disabled />
+
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3 d-none">
+                                                    <div class="form-group">
+                                                        <label class="col-form-label col-xl-12">
+                                                            File Count
+                                                        </label>
+                                                        <input type="text" class="form-control" id="txtfilecount" disabled />
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-5">
+                                                    <div class="form-group">
+                                                        <label class="col-form-label col-xl-12">
+                                                            Uploded  File Count
+                                                        </label>
+                                                        <input type="text" class="form-control" id="txtUploadedfilecount" disabled />
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <div class="form-group">
+                                                        <label class="col-form-label col-xl-12">
+                                                        </label>
+                                                        <button type="submit" id="btnSubmit" class="btn btn-success"><i class="icofont icofont-warning-alt"></i>TRANFER TO SERVER</button>
+                                                    </div>
+                                                </div>
+
+                                                <!-- end of table col-lg-6 -->
+                                                <!-- end of table col-lg-6 -->
+
+                                            </div>
+
+
+                                            <!-- end of row -->
+                                        </div>
+                                        <!-- end of general info -->
+                                    </div>
+                                </div>
+                                <div id="kv-error-1" style="margin-top:10px;display:Block"></div>
+                                <div id="kv-success-1" class="alert alert-success " style="margin-top:10px;display:none"></div>
+                                @*<div class="tab-pane" id="T2" role="tabpanel">
+                                        <div class="card-block" id="IdDataList">
+
+
+
+
+                                        </div>
+                                    </div>*@<div class="tab-pane" id="T2" role="tabpanel">
+                                    <div class="card-block" id="IdDataList">
+
+
+
+
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
+                    <!-- Row end -->
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="IdModal" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Message</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                </div>
+                <div class="container"></div>
+                <div class="modal-body">
+
+
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label class="col-form-label">
+                                Physical Storage  : <label id="Show_IdPhysicalStorage"></label>
+                            </label>
+
+                            <hr style="margin: -3px 0px 1px 1px;">
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label class="col-form-label">
+                                File Location : <label id="Show_IdFileLocation"></label>
+                            </label>
+
+                            <hr style="margin: -3px 0px 1px 1px;">
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label class="col-form-label">
+                                File Names :
+                            </label>
+                            <ul id="IdFileNames"></ul>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <a href="#" data-dismiss="modal" class="btn btn-danger" id="btnRestFiles">Close</a>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+@section scripts{
+
+    <script src="~/libraries/assets/js/select2.js"></script>
+    <script type="text/javascript" src="~/libraries/assets/pages/advance-elements/select2-custom.js"></script>
+
+    <link href="~/libraries/msg/jquery-confirm.min.css" rel="stylesheet" />
+    <link href="~/libraries/fileupload/css/fileinput.css" media="all" rel="stylesheet" type="text/css" />
+    @*<link href="~/libraries/fileupload/css/Filefontawesome.css" rel="stylesheet" />*@<link href="~/libraries/fileupload/css/Filefontawesome.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css" crossorigin="anonymous">
+    <link href="~/libraries/fileupload/themes/explorer-fa5/theme.css" media="all" rel="stylesheet" type="text/css" />
+
+    <script src="~/libraries/fileupload/js/plugins/buffer.min.js" type="text/javascript"></script>
+    <script src="~/libraries/fileupload/js/plugins/filetype.min.js" type="text/javascript"></script>
+    <script src="~/libraries/fileupload/js/plugins/piexif.js" type="text/javascript"></script>
+    <script src="~/libraries/fileupload/js/plugins/sortable.js" type="text/javascript"></script>
+
+    <script src="~/libraries/fileupload/js/fileinput.js" type="text/javascript"></script>
+    <script src="~/libraries/fileupload/js/locales/fr.js" type="text/javascript"></script>
+    <script src="~/libraries/fileupload/js/locales/es.js" type="text/javascript"></script>
+    <script src="~/libraries/fileupload/themes/fa5/theme.js" type="text/javascript"></script>
+    <script src="~/libraries/fileupload/themes/explorer-fa5/theme.js" type="text/javascript"></script>
+
+
+
+    <script src="~/JsProject/commanJs.js"></script>
+    <script src="~/libraries/js/loader/jquery.blockUI.js"></script>
+    <script src="~/libraries/msg/jquery-confirm.min.js"></script>
+
+    <script src="~/Scripts/notify.min.js"></script>
+    <script src="~/libraries/smoke-v3.1.1/js/smoke.js"></script>
+    
+    <script src="~/JsProject/FMS_Home.js"></script>
+
+
+    <script>
+
+
+        $("#tab1").click(function () {
+
+            $("#T1").addClass("active")
+            $("#T2").removeClass("active")
+
+        });
+        $("#tab2").click(function () {
+            blockUIStart();
+            $("#T1").removeClass("active")
+            $("#T2").addClass("active")
+            var Data = {
+                Autoid: $("#Hd_Id").val().trim()
+            }
+            debugger;
+            var Rtn = httpPOST("/Home/GetFiles", Data, true)
+            debugger;
+            $("#IdDataList").empty().append(Rtn.data);
+            $.unblockUI();
+
+        });
+
+        $(document).ready(function () {
+
+            document.querySelectorAll('.FileNameLocation').forEach(elem => {
+                elem.required = true;
+            });
+            debugger;
+            if (Number($("#txtUploadedfilecount").val()) <= 0) {
+                $('#btnSubmit').prop('disabled', true);
+            } else {
+                $('#btnSubmit').prop('disabled', false);
+            }
+
+            ddlYearCheck(Number($("#IdFmType").val()));
+
+            $("#file-Uploder").fileinput({
+                'theme': 'explorer-fa5',
+                'uploadUrl': '@Url.Action("UploadFiles")',
+                uploadAsync: true,
+                elErrorContainer: '#kv-error-1',
+                showCancel: true,
+                overwriteInitial: true,
+                removeFromPreviewOnError: true,
+                retryErrorUploads: true,
+
+                // showRemove:false,
+                //   allowedFileExtensions: ['pdf', 'png', 'jpg', 'jpeg'],
+                uploadExtraData: function () {
+                    //var arr = [];
+                    //$("#MyDiv").find('input, textarea, button, radio').each(function () {
+                    //    arr.push($(this).val());
+                    //});
+                    //debugger;
+
+                    return {
+                        //FileName: $("#IdfileName").val(),
+                        //FileLoaction: $("#IdFileLocation").val(),
+                        SessionId: $("#Idsession").val(),
+                        //FileCount: $("#txtfilecount").val(),
+                        //Hierarchy: $("#HId_Hierarchy").val(),
+                        //Hierarchy2: $("#HId_Hierarchy2").val(),
+                        //VoucherId: $("#txtVoucherId").val(),
+                        //Year: $("#ddlYear").val(),
+                        //Remarks: $("#txtRemarks").val(),
+
+                    };
+                },
+
+            }).on('fileuploaded', function (event, data, id, index) {
+                //alert('2');
+                debugger;
+                $("#txtUploadedfilecount").val(data.response.FUploaded);
+
+                if (Number($("#txtUploadedfilecount").val()) <= 0) {
+                    $('#btnSubmit').prop('disabled', true);
+                } else {
+                    $('#btnSubmit').prop('disabled', false);
+                }
+
+                //if (data.response.Code != "999") {
+                //    if (data.response.Code == "1") {
+                //        debugger;
+
+                //        $("#Show_IdFileLocation").html($("#IdFileLocation").val())
+                //        $("#Show_IdPhysicalStorage").html($("#IdPhysicalStorage").val())
+                //        var list = "";
+
+                //        for (i = 0; i < data.response.Lst.length; i++) {
+                //            list += "<li>" + data.response.Lst[i].FileName + "</li>";
+
+                //        }
+                //        $("#IdFileNames").empty().append(list);
+                //        $('#IdModal').modal('show');
+                //    } else {
+                //        if (data.response.Code == "998") {
+
+
+                //            var Id = Number($("#Idsession").val()) + 12345;
+                //            $("#Idsession").val(Id);
+
+                //            msgError("Error In Uploading Please try again")
+                //            var out = '<li>' + 'Error Occured #  : ' + data.response.Msg + ' </li>';
+                //            $('#kv-error-1').append(out);
+                //            $('#kv-error-1').fadeIn('slow');
+
+                //            $('#file-Uploder').fileinput({
+                //                preProcessUpload: function (fileId, file) {
+                //                    return encryptedFileStack[fileId];
+                //                },
+                //                // your other plugin settings
+                //            });
+                //            //$('#file-Uploder').fileinput('upload');
+                //            ///  $("#file-Uploder").fileinput('upload');
+
+
+
+                //            // $('#file-Uploder').fileinput('refresh');
+                //            //  $('#file-Uploder').fileinput('lock');
+
+                //        }
+                //        //$("#file-Uploder").on('fileuploaderror', function (event, data) {
+                //    }
+                //}
+
+
+                //var dataString = new FormData($("#myForm").get(0));
+                //$.ajax({
+                //    url: "/Home/SaveForm",
+                //    data: dataString,
+                //    contentType: false,
+                //    processData: false,
+                //    cache: false,
+                //    type: "POST",
+                //    dataType: "json",
+                //    success: function (data) {
+                //        debugger;
+                //        var out = '<li>' + 'Error Occured #  : My Error </li>';
+                //        $('#kv-error-1').append(out);
+                //        $('#kv-error-1').fadeIn('slow');
+                //        //$("#file-Uploder").on('fileuploaderror', function (event, data) {
+
+                //        //})
+                //    },
+                //    error: function (xhr, ajaxOptions, thrownError) {
+                //        OnFailure(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+                //    }
+                // });
+
+                //if (Number(data.response.StatusCode) > 0) {
+                //  //  msgSuccess("Uploaded Successfully");
+                //}
+
+
+
+            }).on('filebatchuploadcomplete', function (event, files, extra, data) {
+                debugger;
+
+
+            }).on('filebatchpreupload', function (event, data, id, index) {
+                debugger;
+                var totalFilesCount = $('#input-Uploder').fileinput('getFilesCount', true);
+                $("#txtfilecount").val(data.filescount);
+
+            }).on('fileclear', function (event) {
+                var Id = Number($("#Idsession").val()) + 12345;
+                $("#Idsession").val(Id);
+            }).on('filepreupload', function (event, data, previewId, index, fileId) {
+                debugger;
+                // $("#txtfilecount").val(data.filescount);
+            }).on('fileuploaderror', function (event, data, msg) {
+                debugger;
+                var out = '<li>' + 'Error Occured #  : My Error </li>';
+                $('#kv-error-1').append(out);
+                $('#kv-error-1').fadeIn('slow');
+
+            });
+
+        });
+        $("#btnRestFiles").click(function () {
+            debugger;
+            $("#file-Uploder").fileinput('clear');
+            var Id = Number($("#Idsession").val()) + 12345;
+            $("#Idsession").val(Id);
+            $("#txtVoucherId").val("");
+            $("#txtUploadedfilecount").val("");
+
+            if (Number($("#txtUploadedfilecount").val()) <= 0) {
+                $('#btnSubmit').prop('disabled', true);
+            } else {
+                $('#btnSubmit').prop('disabled', false);
+            }
+
+            //$("#file-Uploder").on('fileclear', function (event) {
+            //    var Id = Number($("#Idsession").val()) + 12345;
+            //    $("#Idsession").val(Id);
+            //});
+        })
+        function delRow(Id) {
+            $("#T1").removeClass("active")
+            $("#T2").addClass("active")
+
+            $.confirm({
+                title: "Confirmation required",
+                content: "Are you sure you want to delete?",
+                buttons: {
+
+                    NO: function () {
+
+                    },
+                    YES: function () {
+
+                        var Data = {
+                            Autoid: Id
+                        }
+                        debugger;
+                        var Rtn = httpPOST("/Common/DeleteFiles", Data, true)
+                        debugger;
+                        if (Number(Rtn.data.StatsCode) <= 0) {
+                            msgError("Failed to delete" + Rtn.data.Message);
+                        } else {
+                            $.notify("File Delete Sucessfully", {
+                                globalPosition: "right center",
+                                className: "success"
+                            })
+
+                        }
+                        $("#tab2").click();
+                    },
+
+                }
+            });
+
+            // $("#IdDataList").empty().append(Rtn.data);
+        }
+
+
+
+        $('#btnSubmit').click(function (e) {
+            e.preventDefault();
+            var IstoVlidate = 'form';
+            if ($(IstoVlidate).smkValidate()) {
+
+                var dataString = new FormData($("#myForm").get(0));
+                blockUIStart();
+
+                $.ajax({
+                    url: "/Home/SaveForm",
+                    data: dataString,
+                    contentType: false,
+                    processData: false,
+                    cache: false,
+                    type: "POST",
+                    dataType: "json",
+                    success: function (data) {
+                        OnSuccess(data);
+                    },
+                    error: function (xhr, ajaxOptions, thrownError) {
+                        OnFailure(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+                    }
+                });
+
+
+            }
+        });
+
+        function OnSuccess(result) {
+            $.unblockUI();
+            if (Number(result.rReturn.StatusCode) <= 0) {
+
+                msgError(result.rReturn.details);
+                //$.notify(result.message, {
+                //    globalPosition: "top center",
+                //    className: "Errror"
+                //})
+
+            } else {
+                debugger;
+                $("#Show_IdFileLocation").html($("#IdFileLocation").val())
+                $("#Show_IdPhysicalStorage").html($("#IdPhysicalStorage").val())
+                var list = "";
+
+                for (i = 0; i < result.Lst.length; i++) {
+                    list += "<li>" + result.Lst[i].FileName + "</li>";
+
+                }
+                $("#IdFileNames").empty().append(list);
+                $('#IdModal').modal('show');
+
+            }
+
+        }
+
+        function OnFailure(result) {
+            $.unblockUI();
+            msgError(result);
+        }
+    </script>
+
+}

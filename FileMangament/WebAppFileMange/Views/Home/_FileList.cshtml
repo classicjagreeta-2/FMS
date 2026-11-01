@@ -1,0 +1,538 @@
+﻿@using System.Data;
+@model DataTable
+
+@{
+    /**/
+
+    ViewBag.Title = @ViewBag.PageName;
+}
+
+<link rel="stylesheet" type="text/css" href="~/libraries/bower_components/datatables.net-bs4/css/dataTables.bootstrap4.min.css">
+<link rel="stylesheet" type="text/css" href="~/libraries/assets/pages/data-table/css/buttons.dataTables.min.css">
+<link href="~/libraries/msg/jquery-confirm.min.css" rel="stylesheet" />
+<link href="~/libraries/TableRowDesign.css" rel="stylesheet" />
+
+<link rel="stylesheet" href="~/libraries/bootstrapTale/src/extensions/fixed-columns/bootstrap-table-fixed-columns.css">
+<script src="~/libraries/bootstrapTale/src/extensions/fixed-columns/bootstrap-table-fixed-columns.js"></script>
+
+
+<!-- Data Table Css -->
+
+<link rel="stylesheet" type="text/css" href="~/libraries/bower_components/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css">
+
+<style>
+    .modal-backdrop {
+        opacity: 0.5 !important;
+    }
+
+    .dataTables_length {
+        margin: 0px 0px -45px 6px;
+    }
+
+    div.dt-buttons {
+        margin: 0px 0px 0px 188px;
+    }
+
+    .hiddenRow {
+        padding: 0 !important;
+    }
+</style>
+
+
+<link href="~/JsProject/MyselfOverIdeStyle.css" rel="stylesheet" />
+
+<div class="card">
+
+
+    <div class="card-block" id="divcontainer">
+        @*<a href="@Url.Action("ExcelExport", "TD_Report", new { Loca = "AGRI" })" id="btnDowlaodExcelRefresh"></a>*@
+        <div class="dt-responsive table-responsive" id="DivTble">
+            <table id="ajax-table" class="table table-striped table-bordered nowrap" style="width:100%"></table>
+        </div>
+
+
+    </div>
+
+
+    <div class="modal fade" id="IdModal" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">EDIT MODEL</h4>
+                    <h5>ID : <label id="lblId"></label> </h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                </div>
+
+                <div class="modal-body" id="IdModelContainer">Loading....</div>
+                <div class="modal-footer">
+                    <a href="#" data-dismiss="modal" class="btn">Close</a>
+                    <a href="#" class="btn btn-primary" id="btnSubmit">Save changes</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="default-Modal" tabindex="-1" role="dialog" data-keyboard="false">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Head Selection </h5>
+                <button type="button" class="btn btn-danger HeadModelClose">X</button>
+            </div>
+            <div class="modal-body">
+                <div class="j-unit">
+                    <div class="j-input">
+                        <div class="checkbox-zoom zoom-primary">
+                            <div class="form-group">
+                            </div>
+                            <div class="checkbox-fade fade-in-primary">
+
+                                <input type="hidden" id="HAutoId" />
+                                <input type="hidden" id="HFmId" />
+                                <input type="hidden" id="HFileName" />
+
+                                <div id="lblCheckBoxList">
+
+                                </div>
+
+
+
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label class="col-form-label">MAIL SUBJECT</label>
+                            <input type="text" id="txtsubject" class="form-control" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger waves-effect HeadModelClose">Close</button>
+                @*<button type="button" class="btn btn-primary  waves-effect btnpdfdownload">PDF</button>*@
+                <button type="button" class="btn btn-primary  waves-effect btnSendMail"> <i class="icofont icofont-email"></i>Email</button>
+            </div>
+        </div>
+    </div>
+</div>
+@section scripts{
+
+    <link rel="stylesheet" href="~/t2/css/fixedColumns.dataTables.min.css" />
+
+
+    <script src="~/libraries/bower_components/datatables.net/js/jquery.dataTables.min.js"></script>
+    <script src="~/libraries/bower_components/datatables.net-buttons/js/dataTables.buttons.min.js"></script>
+    <script src="~/libraries/assets/pages/data-table/extensions/buttons/js/jszip.min.js"></script>
+    <script src="~/libraries/assets/pages/data-table/extensions/buttons/js/vfs_fonts.js"></script>
+    <script src="~/libraries/assets/pages/data-table/extensions/buttons/js/buttons.colVis.min.js"></script>
+    <script src="~/libraries/bower_components/datatables.net-buttons/js/buttons.html5.min.js"></script>
+    <script src="~/libraries/bower_components/datatables.net-bs4/js/dataTables.bootstrap4.min.js"></script>
+
+    <script src="~/libraries/assets/pages/data-table/extensions/row-reorder/js/row-reorder-custom.js"></script>
+
+    <script type="text/javascript" src="~/libraries/assets/js/modalEffects.js"></script>
+    <script type="text/javascript" src="~/libraries/assets/js/classie.js"></script>
+    <script src="~/libraries/js/jquery.unobtrusive-ajax.min.js"></script>
+
+    <script src="~/Scripts/notify.min.js"></script>
+    <script src="~/libraries/msg/jquery-confirm.min.js"></script>
+
+    <script src="~/libraries/js/jsmomentDate.js"></script>
+    <script src="~/libraries/js/loader/jquery.blockUI.js"></script>
+    <script src="~/JsProject/commanJs.js"></script>
+    <script src="~/JsProject/TD_Loder.js"></script>
+    <script src="~/libraries/js/buttonLoader/jquery.buttonLoader.js"></script>
+
+    <script src="~/Scripts/notify.min.js"></script>
+    <script src="~/libraries/smoke-v3.1.1/js/smoke.js"></script>
+    <script src="~/libraries/js/buttonLoader/jquery.buttonLoader.js"></script>
+    <script>
+
+
+
+        $('#btnSubmit').click(function (e) {
+            e.preventDefault();
+            var IstoVlidate = 'form';
+            if ($(IstoVlidate).smkValidate()) {
+
+                var dataString = new FormData($("#myForm").get(0));
+                blockUIStart();
+
+                $.ajax({
+                    url: "/Home/UpdateForm",
+                    data: dataString,
+                    contentType: false,
+                    processData: false,
+                    cache: false,
+                    type: "POST",
+                    dataType: "json",
+                    success: function (data) {
+                        OnSuccess(data);
+                    },
+                    error: function (xhr, ajaxOptions, thrownError) {
+                        OnFailure(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+                    }
+                });
+
+
+            }
+        });
+
+        function OnSuccess(result) {
+            $.unblockUI();
+            debugger;
+            if (Number(result.rReturn.StatusCode) > 0) {
+                $.confirm({
+
+                    title: 'Confirmation !!',
+                    type: 'green',
+                    content: result.rReturn.Message,
+                    typeAnimated: true,
+                    icon: 'icon-smiley',
+                    buttons: {
+
+                        Okay: function (e) {
+
+
+                            var url = '/Home/FileList2';
+                            window.location.href = url;
+                        },
+                        //cancel: function () {
+
+                        //}
+                    }
+
+                });
+            } else {
+                msgError(result.rReturn.Message)
+            }
+
+
+        }
+
+        function OnFailure(result) {
+
+            $.unblockUI();
+            debugger;
+            msgError("Error Occured")
+        }
+
+
+        var ddl = '<a class="dropdown-toggle addon-btn" data-toggle="dropdown" aria-expanded="true"> ' +
+            //' <i class="icofont icofont-ui-settings" ></i >' +
+            '</a>' +
+            '<div class="dropdown-menu dropdown-menu-right">' +
+            '<a class="dropdown-item" href="#"><i class="icofont icofont-attachment"></i>Attach File</a>' +
+            '<a class="dropdown-item" href="#"><i class="icofont icofont-ui-edit"></i>Edit Task</a>' +
+            '<div role="separator" class="dropdown-divider"></div>' +
+            '<a class="dropdown-item" href="#"><i class="icofont icofont-refresh"></i>Reassign Task</a>' +
+            '</div>  '
+
+
+        function PopupForm(H, H2, Id) {
+            debugger;
+            var Obj = {
+                Hic: H,
+                Hic2: H2,
+                Id: Id
+            };
+            console.debug(Obj);
+            //var jsRtn = httpPOST("/Home/LoadHeadData", Obj, true)
+            //$('#IdModelContainer').empty().append(jsRtn.data);
+
+            debugger;
+            $("#lblId").html(Id);
+            blockUIStart();
+
+            $.ajax({
+                type: "POST",
+                url: "/Home/LoadHeadData",
+                data: JSON.stringify(Obj),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+
+                success: function (data) {
+                    debugger;
+                    $('#IdModelContainer').empty().append(jsRtn.data);
+                    $('#IdModal').modal("show");
+                    $.unblockUI();
+                    // data;
+                },
+                error: function (e, x, settings, exception) {
+                    //var message;
+                    var statusErrorMap = {
+                        '400': "Server understood the request, but request content was invalid.",
+                        '401': "Unauthorized access.",
+                        '403': "Forbidden resource can't be accessed.",
+                        '500': "Internal server error.",
+                        '503': "Service unavailable."
+                    };
+
+                    if (e.status == 200) {
+                        debugger;
+
+                        $('#IdModelContainer').empty().append(e.responseText);
+                        $('#IdModal').modal("show");
+                        $.unblockUI();
+
+                    }
+                    if (x.status) {
+                        message = statusErrorMap[x.status];
+                        if (!message) {
+                            message = "Unknown Error \n.";
+                        }
+                    } else if (exception == 'parsererror') {
+                        message = "Error.\nParsing JSON Request failed.";
+                    } else if (exception == 'timeout') {
+                        message = "Request Time out.";
+                    } else if (exception == 'abort') {
+                        message = "Request was aborted by the server";
+                    } else {
+                        message = "Unknown Error \n.";
+                    }
+                }
+            });
+
+        };
+        $(document).ready(function () {
+            $("#mobile-collapse").click();
+            $('.table-responsive').on('show.bs.dropdown', function () {
+                $('.table-responsive').css("overflow", "inherit");
+            });
+
+            $('.table-responsive').on('hide.bs.dropdown', function () {
+                $('.table-responsive').css("overflow", "auto");
+            })
+            var table;
+
+            $(function () {
+                table = $("#ajax-table").DataTable({
+                    initComplete: function () {
+                        var input = $('.dataTables_filter input').unbind(),
+                            self = this.api(),
+                            $searchButton = $('<button>')
+                                .text('search')
+                                .addClass('dt-button  buttons-html5')
+                                .click(function () {
+                                    self.search(input.val()).draw();
+                                }),
+                            $clearButton = $('<button>')
+                                .text('clear')
+                                .addClass('dt-button  buttons-html5')
+                                .click(function () {
+                                    input.val('');
+                                    $searchButton.click();
+                                })
+                        $('.dataTables_filter').append($searchButton, $clearButton);
+                    },
+                    "proccessing": true,
+                    "serverSide": true,
+                    scrollY: '320px',
+                    scrollX: true,
+                    search: {
+                        return: true,
+                    },
+                    responsive: true,
+                    retrieve: true,
+                    "language": {
+                        "search": "",
+                        "searchPlaceholder": "Search...",
+                        "loadingRecords": "&nbsp;",
+                        "processing": "Loading..."
+                    },
+                    ajax: {
+                        url: "/Home/GetFileList",
+                        type: "POST",
+                        "dataType": "JSON",
+                        "dataSrc": function (json) {
+                            // Settings.
+                            debugger;
+                            jsonObj = $.parseJSON(json.Rdata)
+
+                            // Data
+                            return jsonObj;
+                        }
+                    },
+                    'preDrawCallback': function (settings) {
+                        $('div#DivTble').block({
+                            message: 'Loading...',
+                            overlayCSS: { backgroundColor: '#2c2828f5' }
+                        });
+                    },
+                    'drawCallback': function (settings) {
+                        $('div#DivTble').unblock();
+                    },
+                    columns: [
+                          {
+                              className: 'details-control',
+                              orderable: false,
+                              data: null,
+                              defaultContent: ''
+                          },
+                               {
+                                   data: "Autoid", "render": function (data, type, full, meta) {
+                                       debugger;
+                                       return "<a class='btn btn-sm btn-inverse btn-outline-inverse btnLoader " + full.Autoid + "'\
+                                       onclick=PopupForm('" + full.Hierarchy + "','" + full.Hierarchy2 + "','" + full.Autoid + "')>EDIT</a>";
+                                   }
+                               },
+                        { title: 'ID', data: "Autoid", "name": "Autoid" },
+                        { title: 'FLOOR', data: "HCol2_descn", "name": "HCol2_descn" },
+                        { title: 'RACK', data: "HCol3_descn", "name": "HCol3_descn" },
+                        { title: 'SHELF', data: "HCol4_descn", "name": "HCol4_descn" },
+                        { title: 'ARCH', data: "HCol5_descn", "name": "HCol5_descn" },
+
+                        { title: 'COMPANY  ', data: "H2Col2_descn", "name": "H2Col2_descn" },
+                        { title: 'UNIT ', data: "H2Col3_descn", "name": "H2Col3_descn" },
+                        { title: 'DEPARTMENT ', data: "H2Col4_descn", "name": "H2Col4_descn" },
+                        { title: 'TYPE ', data: "H2Col5_descn", "name": "H2Col5_descn" },
+                        { title: 'YEAR ', data: "Yyear", "name": "Yyear" },
+
+                        { title: 'Voucher ', data: "VoucherId", "name": "VoucherId" },
+                        {
+                            title: 'E-Date ', data: "dtDate", "name": "dtDate", "render": function (data, type, full, meta) {
+                                return (moment(data).format("DD/MM/YYYY"));
+                            }
+
+
+                        },
+                        { title: 'Remarks ', data: "Remarks", "name": "Remarks" },
+                    ],
+                    lengthMenu: [
+                        [50, 100, 500, -1],
+                        ['50', '100', '500', 'Show all']
+                    ],
+                    dom: 'lBfrtip',
+                    buttons: [  
+                    {
+                        text: '<i class="icofont icofont-filter"></i> FILTER ',
+                        action: function (e, dt, node, config) {
+                            debugger;
+                            //AjaxSubmit();
+                            // $("#btnDowlaodExcelRefresh").click();
+                            var url = '@Url.Action("FilterData", "Home")';
+                            window.location.href = url;
+                        }
+                        },
+
+                     {
+                         text: '<i class="icofont icofont-close-circled"></i>CLOSE',
+                         action: function (e, dt, node, config) {
+
+                             var url = '/CommonDashBoard/CommonDashBoard';
+                             window.location.href = url;
+
+
+                         }
+                        },
+                        {
+                            text: '<i class="icofont icofont-download"></i> EXPORT EXCEL ',
+                            extend: 'excelHtml5',
+                            exportOptions: {
+                                columns: ':visible:not(:lt(2))'
+                            }
+                        }
+
+                    ],
+
+
+
+                });
+
+
+                $('.dataTable tbody').on('click', '.delete-btn', function () {
+                    table.row($(this).parents('td').parents('tr')).remove().draw();
+                });
+                $('#ajax-table tbody').on('click', 'td.details-control', function () {
+
+
+
+                    var tr = $(this).closest('tr');
+                    var row = table.row(tr);
+
+                    if (row.child.isShown()) {
+                        // This row is already open - close it
+                        row.child.hide();
+                        tr.removeClass('shown');
+                    }
+                    else {
+                        // Open this row
+                        if (table.row('.shown').length) {
+                            $('.details-control', table.row('.shown').node()).click();
+                        }
+                        row.child(format(row.data())).show();
+                        tr.addClass('shown');
+                    }
+
+
+                });
+                $('#ajax-table tbody table tbody').on('click', 'td.details-control', function () {
+                    var tr = $(this).closest('tr');
+                    var row = table.row(tr);
+
+                    if (row.child.isShown()) {
+                        // This row is already open - close it
+                        row.child.hide();
+                        tr.removeClass('shown');
+                    }
+                    else {
+                        // Open this row
+                        row.child(format(row.data())).show();
+                        tr.addClass('shown');
+                    }
+                });
+
+            });
+
+
+
+            function format(d) {
+                debugger;
+                var Obj = {
+                    Id: d.Autoid.toString()
+                }
+                var Msg = "Please Wait Loading..."
+                var ResponseReturn = httpPOSTLoader("/Home/FileSubListData", Obj, Msg)
+                return ResponseReturn;
+            }
+
+
+
+
+            function parseDate(data) {
+                if (data != null)
+                    return moment(data).format('DD/MMM/YYYY');
+                return null;
+            }
+
+            function AjaxSubmit() {
+                $.ajax({
+                    global: false,
+                    url: "../TD_Report/ExcelExport",
+                    "data": { 'FmType': '1' },
+                    "type": "POST",
+                    "dataType": "JSON",
+                    "success": function (result) {
+                        debugger;
+                        var bytes = new Uint8Array(result.FileContents);
+                        var blob = new Blob([bytes], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
+                        var link = document.createElement('a');
+                        link.href = window.URL.createObjectURL(blob);
+                        link.download = "SalesInvoice.xlsx";
+                        link.click();
+                    },
+                    "error": function (e, x, settings, exception) {
+                        debugger;
+                        alert("error");
+                    }
+                })
+            }
+        });
+
+
+
+
+    </script>
+}

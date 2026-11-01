@@ -1,0 +1,103 @@
+﻿@model WebAppFileMange.Models.File_Hierarchy
+
+
+@{
+    ViewBag.Title = "";
+    Layout = "";
+}
+<!-- Select 2 css -->
+<link rel="stylesheet" href="~/libraries/bower_components/select2/css/select2.min.css">
+<link href="~/libraries/smoke-v3.1.1/css/smoke.css" rel="stylesheet" />
+<link href="~/libraries/msg/jquery-confirm.min.css" rel="stylesheet" />
+
+<div class="modal-dialog modal-lg" role="document">
+
+    @using (Ajax.BeginForm("", "", new AjaxOptions { }, new { Id = "myForm" }))
+    {
+
+        @Html.HiddenFor(x => x.Head.Hierarchy, new { @class = "form-control", @Id = "HId_Hierarchy" })
+        @*@Html.HiddenFor(x => x.Head.Hierarchy2, new { @class = "form-control", @Id = "HId_Hierarchy2" })*@
+        @Html.HiddenFor(x=>x.Head.Autoid)
+        @Html.HiddenFor(x => x.Head.Hierarchy2)
+        @Html.HiddenFor(x => x.Head.Yyear)
+
+        <input type="hidden" id="txt_Hierarchy" value="@ViewBag.Hierarchy" />
+            <input type="hidden" id="txt_Hierarchy2" value="@ViewBag.Hierarchy2" />
+
+            @Html.Partial("_Header", Model) 
+    }
+</div>
+
+<script src="~/libraries/assets/js/select2.js"></script>
+<script type="text/javascript" src="~/libraries/assets/pages/advance-elements/select2-custom.js"></script>
+<script src="~/Scripts/notify.min.js"></script>
+
+<script src="~/libraries/smoke-v3.1.1/js/smoke.js"></script>
+<script src="~/libraries/js/loader/jquery.blockUI.js"></script>
+<script src="~/libraries/msg/jquery-confirm.min.js"></script>
+
+<script src="~/JsProject/commanJs.js"></script>
+<script src="~/JsProject/FMS_Home.js"></script>
+
+<script>
+
+
+
+
+    $(document).ready(function () {
+
+        //$('#IdDivHierarchy2').find(':radio').attr('disabled', 'disabled');
+        //$('#IdDivHierarchy2').find('select').attr('disabled', 'disabled');
+        //$('#IdDivHierarchy2').find('input, textarea, button, radio').attr("readonly", true);
+        document.querySelectorAll('.FileNameLocation').forEach(elem => {
+            elem.disabled = true;
+        });
+
+        for (var i = 1; i <= 5; i++) {
+
+            debugger;
+
+
+            var ddlVal = $('#ddl_' + i + ' option').map(function () {
+                return $(this).val();
+            }).get().join(',');
+
+            Idval = ddlVal.substring(1, ddlVal.length)
+            var data = { ddlCode: Idval }
+
+            var IdJ = Number(i) + 1;
+            ddlLoadOnchangePOST("/Home/Loaddll", "select[id=ddl_" + IdJ + "]", data, "SELECT"); 
+        }
+
+
+        for (var i = 1; i <= 6; i++) {
+
+            debugger;
+
+            var ddlVal = $('#ddl2_' + i + ' option').map(function () {
+                return $(this).val();
+            }).get().join(',');
+
+            Idval = ddlVal.substring(1, ddlVal.length)
+            var data = { ddlCode: Idval }
+
+            var IdJ = Number(i) + 1;
+            ddlLoadOnchangePOST("/Home/Loaddll", "select[id=ddl2_" + IdJ + "]", data, "SELECT");
+        }
+
+
+        const HKey = $("#txt_Hierarchy").val().split(',');
+
+        for (var i = 1; i <= HKey.length; i++) {
+            debugger;
+            $('#ddl_' + i).val(HKey[i]).trigger("change");
+        }
+
+
+        const HKey2 = $("#txt_Hierarchy2").val().split(',');
+        for (var i = 1; i <= HKey2.length; i++) {
+            debugger;
+            $('#ddl2_' + i).val(HKey2[i]).trigger("change");
+        }
+    });
+</script>

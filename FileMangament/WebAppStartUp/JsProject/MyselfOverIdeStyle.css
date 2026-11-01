@@ -1,0 +1,8 @@
+﻿.btn-info {
+    color: black;
+}
+
+/*for Excel button*/
+button.dt-button, div.dt-button, a.dt-button {
+    color: black;
+}

@@ -1,0 +1,155 @@
+﻿@model WebAppFileMange.Models.File_Hierarchy
+
+
+@{
+    ViewBag.Title = "FilterData";
+}
+<link href="~/libraries/assets/css/font-awesome.min.css" rel="stylesheet" />
+<!-- Select 2 css -->
+<link rel="stylesheet" href="~/libraries/bower_components/select2/css/select2.min.css">
+<!-- Multi Select css -->
+<link rel="stylesheet" type="text/css" href="~/libraries/bower_components/bootstrap-multiselect/css/bootstrap-multiselect.css">
+<link rel="stylesheet" type="text/css" href="~/libraries/bower_components/multiselect/css/multi-select.css">
+<link href="~/libraries/assets/css/ag-style.css" rel="stylesheet" />
+<link href="~/libraries/assets/css/accodin.css" rel="stylesheet" />
+<link href="~/libraries/assets/css/ag-style.css" rel="stylesheet" />
+<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+
+<link href="~/libraries/msg/jquery-confirm.min.css" rel="stylesheet" />
+<link href="~/libraries/smoke-v3.1.1/css/smoke.css" rel="stylesheet" />
+<link href="~/libraries/assets/css/CheckBoxStyle.css" rel="stylesheet" />
+<script type="text/javascript" src="~/libraries/bower_components/switchery/js/switchery.min.js"></script>
+<div class="modal-dialog modal-lg" role="document">
+
+    @using (Html.BeginForm("FileList2", "Home", FormMethod.Post))
+    {
+        <div class="modal-content">
+
+            <div class="modal-body">
+
+                @Html.HiddenFor(x => x.Head.Hierarchy, new { @class = "form-control", @Id = "HId_Hierarchy_Search" })
+                @Html.HiddenFor(x => x.Head.Hierarchy2, new { @class = "form-control", @Id = "HId_Hierarchy2_Search" })
+                <button class="btn btn-warning pull-right" id="btnRelaod" type="button">RE-LOAD</button>
+                <h4 style="text-align: center;margin-bottom: -36px;"> FILTER FILES DATA</h4>
+                <button class="btn btn-primary" id="btnsearch" type="submit">FILTER</button>
+                <hr />
+                @Html.Partial("_Header", Model)
+                <div class="row">
+                  
+
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label class="col-form-label">
+                                    From Date
+                                </label>
+                                @Html.EditorFor(x => x.Head.FromDate, new { htmlAttributes = new { @class = "form-control", @type = "date", @Id = "dtFromdate" } })
+
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label class="col-form-label">
+                                    To Date
+                                </label>
+
+                                @Html.EditorFor(x => x.Head.ToDate, new { htmlAttributes = new { @class = "form-control", @type = "date",@Id="dtTodate" } })
+
+                            </div>
+                        </div>
+                 
+
+
+                    <!-- end of general info -->
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                @*<a href="#" data-dismiss="modal" class="btn">Close</a>*@
+
+            </div>
+        </div>
+    }
+</div>
+
+
+@section scripts{
+
+    <script src="~/libraries/assets/js/select2.js"></script>
+    <script type="text/javascript" src="~/libraries/assets/pages/advance-elements/select2-custom.js"></script>
+    <script src="~/JsProject/commanJs.js"></script>
+    <script src="~/JsProject/FMS_Home.js"></script>
+    <script>
+
+            $("#btnRelaod").click(function () {
+
+                var url = '@Url.Action("FilterData", "Home")';
+                window.location.href = url;
+            });
+            $(document).ready(function () {
+
+
+
+                $("#txtVoucherId").val("");
+                $("#txtRemarks").val("");
+                debugger;
+
+                for (var i = 1; i <= 5; i++) {
+
+                    debugger;
+
+                    var ddlVal = $('#ddl_' + i + ' option').map(function () {
+                        return $(this).val();
+                    }).get().join(',');
+
+                    Idval = ddlVal.substring(1, ddlVal.length)
+                    var data = { ddlCode: Idval }
+
+                    var IdJ = Number(i) + 1;
+                    ddlLoadOnchangePOST("/Home/Loaddll", "select[id=ddl_" + IdJ + "]", data, "SELECT");
+                }
+
+
+                for (var i = 1; i <= 6; i++) {
+
+                    debugger;
+
+                    var ddlVal = $('#ddl2_' + i + ' option').map(function () {
+                        return $(this).val();
+                    }).get().join(',');
+
+                    Idval = ddlVal.substring(1, ddlVal.length)
+                    var data = { ddlCode: Idval }
+
+                    var IdJ = Number(i) + 1;
+                    ddlLoadOnchangePOST("/Home/Loaddll", "select[id=ddl2_" + IdJ + "]", data, "SELECT");
+                }
+
+            });
+
+            $('#btnsearch').click(function (e) {
+
+               
+                var dataString = {
+                    FileName: $("#IdfileName").val(),
+                    FileLoaction: $("#IdFileLocation").val(),
+                    SessionId: $("#Idsession").val(),
+                    FileCount: $("#txtfilecount").val(),
+                    Hierarchy: $("#HId_Hierarchy_Search").val(),
+                    Hierarchy2: $("#HId_Hierarchy2_Search").val(),
+                    VoucherId: $("#txtVoucherId").val(),
+                    Year: $("#ddlYear").val(),
+                    Remarks: $("#txtRemarks").val(),
+                    FromDate: $("#dtFromdate").val(),
+                    ToDate: $("#dtTodate").val(),
+                }
+                // e.preventDefault();
+
+                debugger;
+                var JsData = httpPOST("/Home/SearchData", dataString, true);
+
+                debugger;
+
+            });
+
+    </script>
+}
